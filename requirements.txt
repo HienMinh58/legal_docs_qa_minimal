@@ -1,0 +1,9 @@
+pdf2image
+paddleocr
+paddlepaddle
+pymilvus
+sentence-transformers
+transformers
+torch
+google-cloud-vision
+pyyaml
