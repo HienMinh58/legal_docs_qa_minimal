@@ -35,7 +35,7 @@ def upload_and_store(request: UploadRequest):
         raise HTTPException(status_code=500, detail="Collection not initialized")
     try:
         record_id = insert_embedding(
-            text=request.url,
+            url=request.url,
             doc_type=request.doc_type,
             code=request.code,
             issue_date=request.issue_date,
@@ -83,5 +83,5 @@ def chat(request: ChatRequest):
         response = ask_chatbot(request.message)
         return {"response": response}
     except Exception as e:
-        logger.error("f[CHAT ERROR] {e}")
+        logger.error("[CHAT ERROR] %s", e)
         raise HTTPException(status_code=500, detail="Chatbot gặp lỗi.")
