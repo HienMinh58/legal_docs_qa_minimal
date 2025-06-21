@@ -4,7 +4,7 @@ from app.src.rag import retrieve_metadata_by_query
 
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key="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",
+    api_key="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",
 )
 
 def ask_chatbot(prompt: str) -> str:
@@ -15,7 +15,7 @@ def ask_chatbot(prompt: str) -> str:
     docs = retrieve_metadata_by_query(prompt, col)
 
     context = "\n\n".join([
-        f"Văn bản: {doc['doc_type']}\nMã số: {doc['code']}\nNgày ban hành: {doc['issue_date']}\nNgày hiệu lực: {doc['effective_date']}"
+        f"Văn bản: {doc['doc_type']}\nMã số: {doc['code']}\nNgày ban hành: {doc['issue_date']}\nNgày hiệu lực: {doc['effective_date']}\nNội dung:\n{doc['text']}"
         for doc in docs
     ])
 
