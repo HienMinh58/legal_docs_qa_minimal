@@ -3,8 +3,27 @@ from pdf2image import convert_from_path
 from PIL import Image
 import pytesseract
 import logging
+import fitz
+import requests
+from io import BytesIO
+
+from app.pre_processing.chunking import Chunking
 
 logger = logging.getLogger(__name__)
+
+def extract_text_from_pdf_url(url: str) -> str:
+    response = requests.get(url)
+    if response.status_code != 200:
+        raise ValueError("Không tải được file PDF.")
+
+    pdf_bytes = BytesIO(response.content)
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    
+    text = ""
+    for page in doc:
+        text += page.get_text()
+    doc.close()
+    return text.strip()
 
 def pdf_to_images(pdf_path, output_dir):
     logger.debug(f"Processing PDF at {pdf_path}")
@@ -75,4 +94,14 @@ def process_and_chunk(image_dir, output_text_dir, output_chunk_dir, max_words=10
             chunk_path = os.path.join(output_chunk_dir, f"{os.path.splitext(image_file)[0]}_chunk_{i+1}.txt")
             with open(chunk_path, 'w', encoding='utf-8') as f:
                 f.write(chunk)
+    return chunks
+
+def chunk_pdf_text(url):
+    text = extract_text_from_pdf_url(url)
+    chunker = Chunking(max_characters=1000, overlap_size=50)
+    chunks = chunker.split_document_with_order_overlap(text)
+    
+    for c in chunks:
+        print(f"[Chunk {c['chunk_id']}] {c['content'][:100]}...")
+    
     return chunks
