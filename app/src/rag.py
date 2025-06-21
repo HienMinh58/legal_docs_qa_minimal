@@ -62,7 +62,7 @@ def retrieve_metadata_by_query(query, collection, top_k=3):
         anns_field="embedding",
         param=search_params,
         limit=top_k,
-        output_fields=["doc_type", "code", "issue_date", "effective_date"]
+        output_fields=["doc_type", "code", "issue_date", "effective_date", "text"]
     )
     
     docs = []
@@ -73,7 +73,8 @@ def retrieve_metadata_by_query(query, collection, top_k=3):
             "doc_type": entity.get("doc_type"),
             "code": entity.get("code"),
             "issue_date": entity.get("issue_date"),
-            "effective_date": entity.get("effective_date")
+            "effective_date": entity.get("effective_date"),
+            "text": entity.get("text")
         })
 
     return docs
